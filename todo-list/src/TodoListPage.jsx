@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 function TodoListPage() {
     // make it to contain certain character
@@ -56,6 +57,7 @@ function TodoListPage() {
 
     return (
         <div className="to-do-list">
+            <Navbar />
             <h1>To-Do-List</h1>
             <div>
                 <input
