@@ -1,11 +1,16 @@
-import { useState } from "react";
-import TodoList from "./TodoList.jsx";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LoginPage from "./LoginPage";
+import TodoListPage from "./TodoListPage";
 
 function App() {
     return (
-        <>
-            <TodoList />
-        </>
+        <Router>
+            <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/todolist" element={<TodoListPage />} />
+            </Routes>
+        </Router>
     );
 }
 

@@ -1,15 +1,23 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function TodoList() {
+function TodoListPage() {
+    // make it to contain certain character
+
     const [tasks, setTasks] = useState([
         "Eat breakfast",
         "Take a shower",
-        "Walk a dog",
+        "Walk the dog",
     ]);
     const [newTask, setNewTask] = useState("");
+    const navigate = useNavigate();
 
     function handleInputChange(event) {
         setNewTask(event.target.value);
+    }
+
+    function handleLogout(event) {
+        navigate("/");
     }
 
     function addTask() {
@@ -86,8 +94,13 @@ function TodoList() {
                     </li>
                 ))}
             </ol>
+            <div className="button-container">
+                <button className="normal-button" onClick={handleLogout}>
+                    Logout
+                </button>
+            </div>
         </div>
     );
 }
 
-export default TodoList;
+export default TodoListPage;
