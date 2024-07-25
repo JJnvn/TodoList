@@ -1,6 +1,8 @@
 package main
 
 import (
+	"todo-list/utils"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/jmoiron/sqlx"
@@ -21,7 +23,7 @@ func main() {
 
 	app := fiber.New()
 
-	// add middleware to handle somthing
+	// add my own middleware to handle somthing
 	app.Use(cors.New())
 
 	app.Post("/signup", Signup)
@@ -39,8 +41,9 @@ func Signup(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.Username == "" || request.Password == "" {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, "username or password cannot be empty")
+	err = utils.HandleEmptyUserOrPass(request.Username, request.Password)
+	if err != nil {
+		return err
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
@@ -79,8 +82,9 @@ func Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	if request.Password == "" || request.Username == "" {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, "username or password cannot be empty")
+	err = utils.HandleEmptyUserOrPass(request.Username, request.Password)
+	if err != nil {
+		return err
 	}
 
 	user := User{}
@@ -123,9 +127,4 @@ type SignupResponse struct {
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-}
-
-type Person struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
 }
