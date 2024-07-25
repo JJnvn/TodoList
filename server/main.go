@@ -21,7 +21,9 @@ func main() {
 
 	app := fiber.New()
 
+	// add middleware to handle somthing
 	app.Use(cors.New())
+
 	app.Post("/signup", Signup)
 	app.Post("/login", Login)
 	app.Get("/hello", Hello)
@@ -38,7 +40,7 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	if request.Username == "" || request.Password == "" {
-		return fiber.ErrUnprocessableEntity
+		return fiber.NewError(fiber.StatusUnprocessableEntity, "username or password cannot be empty")
 	}
 
 	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
@@ -57,13 +59,16 @@ func Signup(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
 	}
 
-	user := User{
-		Id:       int(id),
-		Username: request.Username,
-		Password: string(password),
+	response := SignupResponse{
+		User: User{
+			Id:       int(id),
+			Username: request.Username,
+			Password: string(password),
+		},
+		Message: "Sign up success!",
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(user)
+	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
 func Login(c *fiber.Ctx) error {
@@ -108,6 +113,11 @@ type User struct {
 type SignupRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type SignupResponse struct {
+	User    User   `json:"user"`
+	Message string `json:"message"`
 }
 
 type LoginRequest struct {

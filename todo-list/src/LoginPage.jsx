@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function LoginPage() {
+    // create error box
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -10,25 +11,39 @@ function LoginPage() {
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
     };
+
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
+
     const handleLogin = async () => {
         try {
             const response = await axios.post("http://localhost:8000/login", {
                 username: username,
                 password: password,
             });
-            console.log(response.message);
-            // console.log(response);
+            console.log(response.data.message);
+            console.log(response);
             navigate("/todolist");
         } catch (error) {
-            console.log(error.message);
+            console.log(error.response.data);
             console.log(error);
         }
     };
 
-    // add a sign up function
+    const handleSignup = async () => {
+        try {
+            const response = await axios.post("http://localhost:8000/signup", {
+                username: username,
+                password: password,
+            });
+            console.log(response.data.message);
+            console.log(response);
+        } catch (error) {
+            console.log(error.response.data);
+            console.log(error);
+        }
+    };
 
     return (
         <div className="login-page">
@@ -50,6 +65,9 @@ function LoginPage() {
             <div className="button-container">
                 <button className="normal-button" onClick={handleLogin}>
                     Login
+                </button>
+                <button className="normal-button" onClick={handleSignup}>
+                    Sign up
                 </button>
             </div>
         </div>
