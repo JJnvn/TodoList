@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -12,8 +13,19 @@ function LoginPage() {
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
-    const handleLogin = () => {
-        navigate("/todolist");
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post("http://localhost:8000/login", {
+                username: username,
+                password: password,
+            });
+            console.log(response.message);
+            // console.log(response);
+            navigate("/todolist");
+        } catch (error) {
+            console.log(error.message);
+            console.log(error);
+        }
     };
 
     // add a sign up function

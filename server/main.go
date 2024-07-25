@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 
@@ -9,8 +10,6 @@ import (
 )
 
 var db *sqlx.DB
-
-// const jwtSecret = "infinitas"
 
 func main() {
 
@@ -22,17 +21,7 @@ func main() {
 
 	app := fiber.New()
 
-	// app.Use("/hello", jwtware.New(jwtware.Config{
-	// 	SigningMethod: "HS256",
-	// 	SigningKey:    []byte(jwtSecret),
-	// 	SuccessHandler: func(c *fiber.Ctx) error {
-	// 		return c.Next()
-	// 	},
-	// 	ErrorHandler: func(c *fiber.Ctx, e error) error {
-	// 		return fiber.ErrUnauthorized
-	// 	},
-	// }))
-
+	app.Use(cors.New())
 	app.Post("/signup", Signup)
 	app.Post("/login", Login)
 	app.Get("/hello", Hello)
@@ -86,7 +75,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if request.Password == "" || request.Username == "" {
-		return fiber.ErrUnprocessableEntity
+		return fiber.NewError(fiber.StatusUnprocessableEntity, "username or password cannot be empty")
 	}
 
 	user := User{}
@@ -95,7 +84,7 @@ func Login(c *fiber.Ctx) error {
 	err = db.Get(&user, query, request.Username)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
+		return fiber.NewError(fiber.StatusUnprocessableEntity, "user not found")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))
@@ -104,7 +93,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"message": "Login successful"})
-
 }
 
 func Hello(c *fiber.Ctx) error {
