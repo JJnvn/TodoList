@@ -24,6 +24,7 @@ func main() {
 	app := fiber.New()
 
 	// add my own middleware to handle somthing
+	// consider exported or non-exported scope in service etc.
 	app.Use(cors.New())
 
 	app.Post("/signup", Signup)
