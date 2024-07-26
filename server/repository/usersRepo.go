@@ -6,7 +6,7 @@ type userRepoImpl struct {
 	db *sqlx.DB
 }
 
-func NewUserRepoDB(db *sqlx.DB) *userRepoImpl {
+func NewUserRepoImpl(db *sqlx.DB) *userRepoImpl {
 	return &userRepoImpl{
 		db: db,
 	}
