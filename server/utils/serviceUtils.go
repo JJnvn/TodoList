@@ -8,3 +8,8 @@ func HandleEmptyUserOrPass(username string, password string) error {
 	}
 	return nil
 }
+
+// Implement
+func HandleSimilarUsers(username string) error {
+	return nil
+}
