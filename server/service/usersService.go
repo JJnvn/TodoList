@@ -18,7 +18,7 @@ func NewUsersServiceImpl(repo repository.UsersRepo) *usersServiceImpl {
 	}
 }
 
-func (u *usersServiceImpl) userLogin(request UsersRequest) (*UsersResponse, error) {
+func (u *usersServiceImpl) UserLogin(request UsersRequest) (*UsersResponse, error) {
 	err := utils.HandleEmptyUserOrPass(request.Username, request.Password)
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusNotAcceptable, "username of password cannot be empty")
@@ -43,7 +43,7 @@ func (u *usersServiceImpl) userLogin(request UsersRequest) (*UsersResponse, erro
 	return &response, nil
 }
 
-func (u *usersServiceImpl) userSignUp(request UsersRequest) (*UsersResponse, error) {
+func (u *usersServiceImpl) UserSignUp(request UsersRequest) (*UsersResponse, error) {
 	err := utils.HandleEmptyUserOrPass(request.Username, request.Password)
 	if err != nil {
 		return nil, fiber.NewError(fiber.StatusNotAcceptable, "username of password cannot be empty")

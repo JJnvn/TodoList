@@ -11,6 +11,6 @@ type UsersRequest struct {
 }
 
 type UsersService interface {
-	userLogin(request UsersRequest) (*UsersResponse, error)
-	userSignUp(request UsersRequest) (*UsersResponse, error)
+	UserLogin(request UsersRequest) (*UsersResponse, error)
+	UserSignUp(request UsersRequest) (*UsersResponse, error)
 }
