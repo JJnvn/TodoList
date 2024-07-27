@@ -1,6 +1,9 @@
 package main
 
 import (
+	"todo-list/handler"
+	"todo-list/repository"
+	"todo-list/service"
 	"todo-list/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,60 +23,58 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	usersRepo := repository.NewUserRepoImpl(db)
+	usersService := service.NewUsersServiceImpl(usersRepo)
+	usersHandler := handler.NewUsersHandler(usersService)
 	app := fiber.New()
 
 	// add my own middleware to handle somthing
 	// consider exported or non-exported scope in service etc.
 	app.Use(cors.New())
 
-	app.Post("/signup", Signup)
-	app.Post("/login", Login)
+	app.Post("/signup", usersHandler.HandleSignUp)
+	app.Post("/login", usersHandler.HandleLogin)
+	app.Post("/login2", Login)
 	app.Get("/hello", Hello)
 
 	app.Listen(":8000")
 }
 
-func Signup(c *fiber.Ctx) error {
+// func Signup(c *fiber.Ctx) error {
 
-	request := SignupRequest{}
-	err := c.BodyParser(&request)
-	if err != nil {
-		return err
-	}
+// 	request := SignupRequest{}
+// 	err := c.BodyParser(&request)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	err = utils.HandleEmptyUserOrPass(request.Username, request.Password)
-	if err != nil {
-		return err
-	}
+// password, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
+// if err != nil {
+// 	return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
+// }
 
-	password, err := bcrypt.GenerateFromPassword([]byte(request.Password), 10)
-	if err != nil {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
-	}
+// query := "insert users (username, password) values (?, ?)"
+// result, err := db.Exec(query, request.Username, string(password))
+// if err != nil {
+// 	return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
+// }
 
-	query := "insert users (username, password) values (?, ?)"
-	result, err := db.Exec(query, request.Username, string(password))
-	if err != nil {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
-	}
+// id, err := result.LastInsertId()
+// if err != nil {
+// 	return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
+// }
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return fiber.NewError(fiber.StatusUnprocessableEntity, err.Error())
-	}
+// response := SignupResponse{
+// 	User: User{
+// 		Id:       int(id),
+// 		Username: request.Username,
+// 		Password: string(password),
+// 	},
+// 	Message: "Sign up success!",
+// }
 
-	response := SignupResponse{
-		User: User{
-			Id:       int(id),
-			Username: request.Username,
-			Password: string(password),
-		},
-		Message: "Sign up success!",
-	}
-
-	return c.Status(fiber.StatusCreated).JSON(response)
-}
+// 	return c.Status(fiber.StatusCreated).JSON(response)
+// }
 
 func Login(c *fiber.Ctx) error {
 

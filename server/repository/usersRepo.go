@@ -25,7 +25,7 @@ func (u *userRepoImpl) GetAllUsers() ([]User, error) {
 func (u *userRepoImpl) GetUserByUsername(username string) (*User, error) {
 	user := User{}
 	query := "select id, username, password from users where username=?"
-	err := u.db.Select(&user, query, username)
+	err := u.db.Get(&user, query, username)
 	if err != nil {
 		return nil, err
 	}

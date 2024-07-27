@@ -1,13 +1,13 @@
 package service
 
 type UsersResponse struct {
-	Username string
-	Message  string
+	Username string `json:"username"`
+	Message  string `json:"message"`
 }
 
 type UsersRequest struct {
-	Username string
-	Password string
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type UsersService interface {
