@@ -22,7 +22,9 @@ function SignupPage() {
                 username: username,
                 password: password,
             });
-            navigate("/login");
+            if (response.data.message === "user created") {
+                navigate("/login");
+            }
             console.log(response.data.message);
             console.log(response);
         } catch (error) {
