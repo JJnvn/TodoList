@@ -6,6 +6,8 @@ body {
     text-align: center;
     margin: 0 auto;
 }
+.startup-page,
+.signup-page,
 .login-page {
     font-family: Arial, Helvetica, sans-serif;
 }
