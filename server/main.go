@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"todo-list/handler"
 	"todo-list/repository"
 	"todo-list/service"
+	"todo-list/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -13,6 +15,24 @@ import (
 )
 
 var db *sqlx.DB
+
+func jwtMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		tokenString := c.Cookies("token")
+		if tokenString == "" {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+		}
+
+		claims, err := utils.VerifyJWT(tokenString)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+		}
+
+		c.Locals("username", claims.Username)
+		fmt.Println("hello")
+		return c.Next()
+	}
+}
 
 func main() {
 
@@ -26,11 +46,11 @@ func main() {
 	usersHandler := handler.NewUsersHandler(usersService)
 	app := fiber.New()
 
-	// add my own middleware to handle somthing
 	// consider exported or non-exported scope in service etc.
 	app.Use(cors.New())
 
 	app.Post("/signup", usersHandler.HandleSignUp)
+	app.Post("/todolist", jwtMiddleware(), usersHandler.HandleLogin)
 	app.Post("/login", usersHandler.HandleLogin)
 	app.Get("/hello", Hello)
 

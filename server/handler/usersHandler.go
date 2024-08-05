@@ -2,6 +2,7 @@ package handler
 
 import (
 	"todo-list/service"
+	"todo-list/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -39,5 +40,7 @@ func (u usersHandler) HandleLogin(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	token, err := utils.GenerateJWT(response.Username)
+	utils.SetJWTInCookie(c, token)
 	return c.JSON(response)
 }

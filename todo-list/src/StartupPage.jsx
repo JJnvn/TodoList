@@ -4,7 +4,11 @@ function StartupPage() {
     const navigate = useNavigate();
 
     function handleLogin() {
-        navigate("/login");
+        try {
+            navigate("/todolist");
+        } catch {
+            navigate("/login");
+        }
     }
 
     function handleSignup() {
